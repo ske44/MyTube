@@ -74,24 +74,14 @@
       const videoID = extractVideoID(queryRaw);
 
       if (videoID) {
-        const video = videosDB.find(v => v.id === videoID);
-        if (video) {
-          container.innerHTML = `
-            <div class="video-item">
-              <div class="video-title">${video.title}</div>
-              <iframe src="https://www.youtube.com/embed/${video.id}" frameborder="0" allowfullscreen></iframe>
-              <div class="video-description">${video.description}</div>
-            </div>
-          `;
-        } else {
-          container.innerHTML = `
-            <div class="video-item">
-              <div class="video-title">Видео не в базе</div>
-              <iframe src="https://www.youtube.com/embed/${videoID}" frameborder="0" allowfullscreen></iframe>
-              <div class="video-description">Видео загружено по прямой ссылке.</div>
-            </div>
-          `;
-        }
+        // Показываем видео по ссылке без проверки базы
+        container.innerHTML = `
+          <div class="video-item">
+            <div class="video-title">Видео по ссылке</div>
+            <iframe src="https://www.youtube.com/embed/${videoID}" frameborder="0" allowfullscreen></iframe>
+            <div class="video-description">Это видео загружено по прямой ссылке.</div>
+          </div>
+        `;
         return;
       }
 
