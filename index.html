@@ -1,159 +1,155 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>MyTube — Мини YouTube на JSON</title>
-  <style>
-    /* Сброс базовых стилей */
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #121212;
-      color: #e1e1e1;
-      margin: 0;
-      padding: 0 20px 40px;
-      max-width: 960px;
-      margin-left: auto;
-      margin-right: auto;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    header {
-      padding: 20px 0;
-      text-align: center;
-      border-bottom: 2px solid #282828;
-      margin-bottom: 25px;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 3rem;
-      letter-spacing: 4px;
-      color: #FF3D00; /* Яркий акцент */
-      user-select: none;
-    }
-    .socials {
-      margin-top: 10px;
-    }
-    .social-icon {
-      width: 40px;
-      height: 40px;
-      margin: 0 12px;
-      filter: invert(90%) sepia(7%) saturate(500%) hue-rotate(160deg) brightness(120%) contrast(90%);
-      transition: filter 0.3s ease, transform 0.3s ease;
-      cursor: pointer;
-      vertical-align: middle;
-    }
-    .social-icon:hover {
-      filter: invert(57%) sepia(98%) saturate(6000%) hue-rotate(5deg) brightness(105%) contrast(102%);
-      transform: scale(1.15);
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MyTube — Мини YouTube на JSON</title>
+<style>
+  /* Сброс */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9f9f9;
+    color: #222;
+    margin: 0;
+    padding: 0 16px 40px;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  header {
+    padding: 24px 0;
+    text-align: center;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 32px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ff4500;
+    letter-spacing: 3px;
+    user-select: none;
+  }
+  .socials {
+    margin-top: 12px;
+  }
+  .social-icon {
+    width: 36px;
+    height: 36px;
+    margin: 0 14px;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    filter: grayscale(60%);
+  }
+  .social-icon:hover {
+    filter: grayscale(0);
+    transform: scale(1.2);
+  }
 
-    main {
-      flex-grow: 1;
-    }
-    .search-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 30px;
-      gap: 12px;
-    }
-    #searchInput {
-      flex-grow: 1;
-      font-size: 1.1rem;
-      padding: 12px 18px;
-      border-radius: 30px;
-      border: none;
-      outline: none;
-      background-color: #222;
-      color: #eee;
-      box-shadow: 0 0 8px rgba(255, 61, 0, 0.4);
-      transition: background-color 0.3s ease;
-    }
-    #searchInput::placeholder {
-      color: #999;
-    }
-    #searchInput:focus {
-      background-color: #333;
-    }
-    button {
-      background-color: #FF3D00;
-      border: none;
-      color: #fff;
-      font-weight: 600;
-      font-size: 1.1rem;
-      padding: 12px 25px;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(255, 61, 0, 0.7);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    button:hover {
-      background-color: #e63600;
-      box-shadow: 0 6px 14px rgba(230, 54, 0, 0.9);
-    }
+  main {
+    flex-grow: 1;
+  }
+  .search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 36px;
+    gap: 14px;
+  }
+  #searchInput {
+    flex-grow: 1;
+    font-size: 1.15rem;
+    padding: 14px 22px;
+    border-radius: 32px;
+    border: 2px solid #ff4500;
+    outline: none;
+    transition: border-color 0.3s ease;
+    color: #333;
+  }
+  #searchInput::placeholder {
+    color: #999;
+  }
+  #searchInput:focus {
+    border-color: #ff6a33;
+    box-shadow: 0 0 6px rgba(255, 69, 0, 0.6);
+  }
+  button {
+    background-color: #ff4500;
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1.15rem;
+    padding: 14px 28px;
+    border-radius: 32px;
+    cursor: pointer;
+    box-shadow: 0 5px 14px rgba(255, 69, 0, 0.5);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  button:hover {
+    background-color: #e03e00;
+    box-shadow: 0 7px 18px rgba(224, 62, 0, 0.7);
+  }
 
-    #videos {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-    }
+  #videos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 26px;
+  }
 
-    .video-item {
-      background-color: #1e1e1e;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.8);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.3s ease;
-    }
-    .video-item:hover {
-      transform: scale(1.03);
-      box-shadow: 0 8px 24px rgba(255, 61, 0, 0.6);
-    }
-    .video-title {
-      font-weight: 700;
-      font-size: 1.15rem;
-      padding: 12px 16px 6px;
-      color: #ff5722;
-    }
-    .video-description {
-      font-size: 0.9rem;
-      color: #bbb;
-      padding: 0 16px 12px;
-      flex-grow: 1;
-    }
+  .video-item {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 3px 9px rgba(0,0,0,0.12);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .video-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(255, 69, 0, 0.3);
+  }
+  .video-title {
+    font-weight: 600;
+    font-size: 1.2rem;
+    padding: 14px 18px 8px;
+    color: #ff4500;
+  }
+  .video-description {
+    font-size: 0.95rem;
+    color: #555;
+    padding: 0 18px 14px;
+    flex-grow: 1;
+  }
+  iframe {
+    width: 100%;
+    height: 190px;
+    border: none;
+    background-color: #000;
+  }
+
+  @media (min-width: 600px) {
     iframe {
-      width: 100%;
-      height: 180px;
-      border: none;
-      background-color: black;
+      height: 220px;
     }
+  }
+  @media (min-width: 900px) {
+    iframe {
+      height: 250px;
+    }
+  }
 
-    @media (min-width: 600px) {
-      iframe {
-        height: 220px;
-      }
-    }
-
-    @media (min-width: 900px) {
-      iframe {
-        height: 240px;
-      }
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px 0;
-      color: #666;
-      font-size: 0.9rem;
-      margin-top: 40px;
-      user-select: none;
-    }
-  </style>
+  footer {
+    text-align: center;
+    padding: 18px 0 10px;
+    color: #999;
+    font-size: 0.9rem;
+    margin-top: 48px;
+    user-select: none;
+  }
+</style>
 </head>
 <body>
   <header>
