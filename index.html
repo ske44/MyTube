@@ -3,50 +3,52 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MyTube — Мини YouTube на JSON</title>
+<title>MyTube</title>
 <style>
-  /* Сброс */
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
   * {
     box-sizing: border-box;
   }
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f9f9f9;
-    color: #222;
     margin: 0;
-    padding: 0 16px 40px;
+    padding: 0 20px 50px;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f0f4ff 0%, #d9e4ff 100%);
+    color: #2c3e50;
     max-width: 960px;
     margin-left: auto;
     margin-right: auto;
   }
   header {
-    padding: 24px 0;
+    padding: 36px 0 16px;
     text-align: center;
-    border-bottom: 2px solid #ddd;
-    margin-bottom: 32px;
+    border-bottom: 2px solid #a5b8ff;
+    margin-bottom: 40px;
   }
   header h1 {
     margin: 0;
-    font-size: 3rem;
-    font-weight: 700;
-    color: #ff4500;
-    letter-spacing: 3px;
+    font-weight: 600;
+    font-size: 3.8rem;
+    color: #4a69bd;
+    letter-spacing: 6px;
+    text-shadow: 0 3px 6px rgba(74, 105, 189, 0.3);
     user-select: none;
   }
   .socials {
-    margin-top: 12px;
+    margin-top: 18px;
   }
   .social-icon {
-    width: 36px;
-    height: 36px;
-    margin: 0 14px;
+    width: 42px;
+    height: 42px;
+    margin: 0 16px;
     cursor: pointer;
-    transition: transform 0.2s ease, filter 0.2s ease;
-    filter: grayscale(60%);
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+    transition: transform 0.25s ease, filter 0.25s ease;
   }
   .social-icon:hover {
-    filter: grayscale(0);
-    transform: scale(1.2);
+    filter: drop-shadow(0 2px 6px rgba(74, 105, 189, 0.6));
+    transform: scale(1.25);
   }
 
   main {
@@ -55,192 +57,195 @@
   .search-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 36px;
-    gap: 14px;
+    margin-bottom: 42px;
+    gap: 16px;
   }
   #searchInput {
     flex-grow: 1;
-    font-size: 1.15rem;
-    padding: 14px 22px;
-    border-radius: 32px;
-    border: 2px solid #ff4500;
+    font-size: 1.25rem;
+    padding: 16px 26px;
+    border-radius: 40px;
+    border: 2px solid #4a69bd;
     outline: none;
-    transition: border-color 0.3s ease;
-    color: #333;
+    color: #34495e;
+    box-shadow: 0 0 10px rgba(74, 105, 189, 0.3);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
   #searchInput::placeholder {
-    color: #999;
+    color: #8fa6d9;
   }
   #searchInput:focus {
-    border-color: #ff6a33;
-    box-shadow: 0 0 6px rgba(255, 69, 0, 0.6);
+    border-color: #3a54b3;
+    box-shadow: 0 0 20px rgba(58, 84, 179, 0.6);
   }
   button {
-    background-color: #ff4500;
+    background: linear-gradient(135deg, #4a69bd 0%, #6a8ddb 100%);
     border: none;
     color: white;
     font-weight: 700;
-    font-size: 1.15rem;
-    padding: 14px 28px;
-    border-radius: 32px;
+    font-size: 1.25rem;
+    padding: 16px 36px;
+    border-radius: 40px;
     cursor: pointer;
-    box-shadow: 0 5px 14px rgba(255, 69, 0, 0.5);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 6px 20px rgba(74, 105, 189, 0.6);
+    transition: background 0.4s ease, box-shadow 0.4s ease;
   }
   button:hover {
-    background-color: #e03e00;
-    box-shadow: 0 7px 18px rgba(224, 62, 0, 0.7);
+    background: linear-gradient(135deg, #3a54b3 0%, #5577c0 100%);
+    box-shadow: 0 8px 26px rgba(53, 83, 169, 0.8);
   }
 
   #videos {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 26px;
+    gap: 30px;
   }
 
   .video-item {
     background: white;
-    border-radius: 14px;
-    box-shadow: 0 3px 9px rgba(0,0,0,0.12);
+    border-radius: 18px;
+    box-shadow: 0 4px 18px rgba(74, 105, 189, 0.15);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
   }
   .video-item:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 25px rgba(255, 69, 0, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 34px rgba(74, 105, 189, 0.35);
   }
   .video-title {
     font-weight: 600;
-    font-size: 1.2rem;
-    padding: 14px 18px 8px;
-    color: #ff4500;
+    font-size: 1.3rem;
+    padding: 18px 24px 10px;
+    color: #34495e;
   }
   .video-description {
-    font-size: 0.95rem;
-    color: #555;
-    padding: 0 18px 14px;
+    font-size: 1rem;
+    color: #6b7a99;
+    padding: 0 24px 20px;
     flex-grow: 1;
   }
   iframe {
     width: 100%;
-    height: 190px;
+    height: 210px;
     border: none;
     background-color: #000;
   }
 
   @media (min-width: 600px) {
     iframe {
-      height: 220px;
+      height: 240px;
     }
   }
   @media (min-width: 900px) {
     iframe {
-      height: 250px;
+      height: 280px;
     }
   }
 
   footer {
     text-align: center;
-    padding: 18px 0 10px;
-    color: #999;
-    font-size: 0.9rem;
-    margin-top: 48px;
+    padding: 24px 0 12px;
+    color: #9ca8c9;
+    font-size: 1rem;
+    margin-top: 56px;
     user-select: none;
   }
 </style>
 </head>
 <body>
-  <header>
-    <h1>MyTube</h1>
-    <div class="socials">
-      <a href="https://t.me/MyTubeYouTube" target="_blank" rel="noopener noreferrer" title="Телеграм">
-        <img class="social-icon" src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" />
-      </a>
-      <a href="https://discord.gg/hUczWKUhQP" target="_blank" rel="noopener noreferrer" title="Discord">
-        <img class="social-icon" src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord" />
-      </a>
-    </div>
-  </header>
+<header>
+  <h1>MyTube</h1>
+  <div class="socials">
+    <a href="https://t.me/MyTubeYouTube" target="_blank" rel="noopener noreferrer" title="Телеграм">
+      <img class="social-icon" src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" />
+    </a>
+    <a href="https://discord.gg/hUczWKUhQP" target="_blank" rel="noopener noreferrer" title="Discord">
+      <img class="social-icon" src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord" />
+    </a>
+  </div>
+</header>
 
-  <main>
-    <div class="search-container">
-      <input id="searchInput" type="text" placeholder="Введите ключевые слова или ссылку на видео..." />
-      <button onclick="searchVideos()">Искать</button>
-    </div>
-    <div id="videos">Загрузка видео...</div>
-  </main>
+<main>
+  <div class="search-container">
+    <input id="searchInput" type="text" placeholder="Введите ключевые слова или ссылку на видео..." />
+    <button onclick="searchVideos()">Искать</button>
+  </div>
+  <div id="videos">Загрузка видео...</div>
+</main>
 
-  <footer>
-    &copy; 2025 MyTube — Мини YouTube на JSON
-  </footer>
+<footer>
+  &copy; 2025 MyTube — Мини YouTube на JSON
+</footer>
 
-  <script>
-    let videosDB = [];
+<script>
+  let videosDB = [];
 
-    async function loadVideos() {
-      try {
-        const res = await fetch('videos.json');
-        videosDB = await res.json();
-        searchVideos();
-      } catch (e) {
-        document.getElementById('videos').innerHTML = "Ошибка загрузки видео.";
-        console.error(e);
-      }
+  async function loadVideos() {
+    try {
+      const res = await fetch('videos.json');
+      videosDB = await res.json();
+      searchVideos();
+    } catch (e) {
+      document.getElementById('videos').innerHTML = "Ошибка загрузки видео.";
+      console.error(e);
+    }
+  }
+
+  function extractVideoID(url) {
+    const regex = /(?:youtube\.com\/.*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  }
+
+  function searchVideos() {
+    const queryRaw = document.getElementById("searchInput").value.trim();
+    const query = queryRaw.toLowerCase();
+    const container = document.getElementById("videos");
+
+    container.innerHTML = "";
+
+    const videoID = extractVideoID(queryRaw);
+
+    if (videoID) {
+      container.innerHTML = `
+        <div class="video-item" tabindex="0">
+          <div class="video-title">Видео по ссылке</div>
+          <iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe>
+          <div class="video-description">Это видео загружено по прямой ссылке.</div>
+        </div>
+      `;
+      return;
     }
 
-    function extractVideoID(url) {
-      const regex = /(?:youtube\.com\/.*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-      const match = url.match(regex);
-      return match ? match[1] : null;
+    const videos = query === "" 
+      ? videosDB 
+      : videosDB.filter(v => 
+          v.title.toLowerCase().includes(query) || 
+          v.description.toLowerCase().includes(query)
+        );
+
+    if (videos.length === 0) {
+      container.innerHTML = "<p>Видео не найдены.</p>";
+      return;
     }
 
-    function searchVideos() {
-      const queryRaw = document.getElementById("searchInput").value.trim();
-      const query = queryRaw.toLowerCase();
-      const container = document.getElementById("videos");
+    videos.forEach(video => {
+      const div = document.createElement("div");
+      div.className = "video-item";
+      div.tabIndex = 0;
+      div.innerHTML = `
+        <div class="video-title">${video.title}</div>
+        <iframe src="https://www.youtube.com/embed/${video.id}" allowfullscreen></iframe>
+        <div class="video-description">${video.description}</div>
+      `;
+      container.appendChild(div);
+    });
+  }
 
-      container.innerHTML = "";
-
-      const videoID = extractVideoID(queryRaw);
-
-      if (videoID) {
-        container.innerHTML = `
-          <div class="video-item">
-            <div class="video-title">Видео по ссылке</div>
-            <iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe>
-            <div class="video-description">Это видео загружено по прямой ссылке.</div>
-          </div>
-        `;
-        return;
-      }
-
-      const videos = query === "" 
-        ? videosDB 
-        : videosDB.filter(v => 
-            v.title.toLowerCase().includes(query) || 
-            v.description.toLowerCase().includes(query)
-          );
-
-      if (videos.length === 0) {
-        container.innerHTML = "<p>Видео не найдены.</p>";
-        return;
-      }
-
-      videos.forEach(video => {
-        const div = document.createElement("div");
-        div.className = "video-item";
-        div.innerHTML = `
-          <div class="video-title">${video.title}</div>
-          <iframe src="https://www.youtube.com/embed/${video.id}" allowfullscreen></iframe>
-          <div class="video-description">${video.description}</div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    loadVideos();
-  </script>
+  loadVideos();
+</script>
 </body>
 </html>
