@@ -3,413 +3,245 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MyTube — Видео платформа</title>
+<title>MyTube</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+  * {
+    box-sizing: border-box;
+  }
   body {
-    margin: 0; padding: 0;
-    background: #181818;
+    margin: 0;
+    padding: 0 20px 40px;
+    font-family: 'Roboto', sans-serif;
+    background-color: #181818;
     color: #fff;
-    font-family: Arial, sans-serif;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
   }
   header {
-    background: #202020;
-    padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid #303030;
   }
   header h1 {
-    margin: 0;
-    font-weight: bold;
-  }
-  #socialLinks a {
-    color: #888;
-    margin-left: 15px;
-    font-size: 24px;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  #socialLinks a:hover {
+    font-weight: 700;
+    font-size: 2.8rem;
     color: #ff0000;
+    letter-spacing: 4px;
+    user-select: none;
+    margin: 0;
   }
-  #authPanel, #uploadPanel, #searchPanel, #videosPanel {
-    max-width: 480px;
-    margin: 20px auto;
-    background: #222;
-    padding: 15px;
-    border-radius: 8px;
+  .socials {
+    display: flex;
+    gap: 16px;
   }
-  label {
-    display: block;
-    margin-top: 12px;
-    margin-bottom: 4px;
+  .social-icon {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    filter: brightness(0.8);
+    transition: filter 0.2s ease, transform 0.2s ease;
   }
-  input[type="text"], input[type="url"] {
-    width: 100%;
-    padding: 8px;
-    border-radius: 5px;
+  .social-icon:hover {
+    filter: brightness(1);
+    transform: scale(1.2);
+  }
+
+  main {
+    margin-top: 24px;
+  }
+  .search-container {
+    display: flex;
+    margin-bottom: 36px;
+    gap: 12px;
+  }
+  #searchInput {
+    flex-grow: 1;
+    font-size: 1.2rem;
+    padding: 14px 20px;
+    border-radius: 24px;
     border: none;
-    background: #333;
-    color: #eee;
-    font-size: 16px;
+    outline: none;
+    background-color: #303030;
+    color: #fff;
+    box-shadow: inset 0 0 5px #00000099;
+    transition: box-shadow 0.3s ease;
+  }
+  #searchInput::placeholder {
+    color: #999;
+  }
+  #searchInput:focus {
+    box-shadow: 0 0 8px #ff0000aa;
   }
   button {
-    margin-top: 15px;
-    padding: 12px;
-    width: 100%;
+    background-color: #ff0000;
     border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 16px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+    padding: 14px 30px;
+    border-radius: 24px;
     cursor: pointer;
-    background: #ff0000;
-    color: #fff;
-    transition: background 0.3s;
+    box-shadow: 0 3px 10px #ff0000bb;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
   }
   button:hover {
-    background: #cc0000;
+    background-color: #cc0000;
+    box-shadow: 0 5px 15px #cc0000cc;
   }
-  #authToggle {
-    text-align: center;
-    margin-top: 10px;
-    cursor: pointer;
-    color: #aaa;
+
+  #videos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 28px;
   }
-  #authToggle:hover {
-    color: #ff4444;
-  }
-  #message {
-    margin-top: 10px;
-    min-height: 20px;
-    font-weight: bold;
-    color: #ff4444;
-  }
-  #videosList {
-    margin-top: 15px;
-  }
-  .videoItem {
-    background: #2a2a2a;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 12px;
-  }
-  .videoItem h3 {
-    margin: 0 0 6px 0;
-    font-size: 18px;
-  }
-  .videoItem iframe {
-    width: 100%;
-    height: 200px;
-    border: none;
-    border-radius: 6px;
-  }
-  #currentUserInfo {
-    font-size: 14px;
-    color: #ccc;
-    margin-top: 5px;
+
+  .video-item {
+    background-color: #242424;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px #000000cc;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
   }
-  #currentUserInfo img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-right: 8px;
-    object-fit: cover;
+  .video-item:hover {
+    box-shadow: 0 10px 28px #ff0000cc;
+    transform: translateY(-6px);
   }
-  #logoutBtn {
-    background: #555;
-    margin-top: 10px;
+  .video-title {
+    font-weight: 700;
+    font-size: 1.15rem;
+    padding: 14px 16px 8px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .video-description {
+    font-weight: 400;
+    font-size: 0.95rem;
+    color: #b3b3b3;
+    padding: 0 16px 14px;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  iframe {
+    width: 100%;
+    height: 190px;
+    border: none;
+    background-color: #000;
+  }
+
+  @media (min-width: 600px) {
+    iframe {
+      height: 220px;
+    }
+  }
+  @media (min-width: 900px) {
+    iframe {
+      height: 250px;
+    }
+  }
+
+  footer {
+    text-align: center;
+    padding: 20px 0 10px;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 48px;
+    user-select: none;
   }
 </style>
 </head>
 <body>
-
 <header>
   <h1>MyTube</h1>
-  <div id="socialLinks">
-    <a href="https://t.me/MyTubeYouTube" target="_blank" title="Телеграм">&#128172;</a>
-    <a href="https://discord.gg/hUczWKUhQP" target="_blank" title="Дискорд">&#128187;</a>
+  <div class="socials">
+    <a href="https://t.me/MyTubeYouTube" target="_blank" rel="noopener noreferrer" title="Телеграм">
+      <img class="social-icon" src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" />
+    </a>
+    <a href="https://discord.gg/hUczWKUhQP" target="_blank" rel="noopener noreferrer" title="Discord">
+      <img class="social-icon" src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord" />
+    </a>
   </div>
 </header>
 
-<section id="authPanel">
-  <h2 id="authTitle">Вход</h2>
-  <label for="nickname">Никнейм</label>
-  <input type="text" id="nickname" autocomplete="off" />
-  <label for="avatar">Аватарка (URL)</label>
-  <input type="url" id="avatar" autocomplete="off" />
-  <button id="authButton">Войти</button>
-  <div id="authToggle">Нет аккаунта? Зарегистрироваться</div>
-  <div id="message"></div>
-</section>
+<main>
+  <div class="search-container">
+    <input id="searchInput" type="text" placeholder="" />
+    <button onclick="searchVideos()"></button>
+  </div>
+  <div id="videos"></div>
+</main>
 
-<section id="currentUserInfo" style="display:none;">
-  <img id="userAvatar" src="" alt="Аватар" />
-  <div id="userNickname"></div>
-  <button id="logoutBtn">Выйти</button>
-</section>
-
-<section id="uploadPanel" style="display:none;">
-  <h2>Загрузить видео</h2>
-  <label for="videoTitle">Название видео</label>
-  <input type="text" id="videoTitle" autocomplete="off" />
-  <label for="videoUrl">Ссылка на видео (YouTube embed URL)</label>
-  <input type="url" id="videoUrl" placeholder="https://www.youtube.com/embed/..." autocomplete="off" />
-  <button id="uploadBtn">Загрузить</button>
-</section>
-
-<section id="searchPanel" style="display:none;">
-  <h2>Поиск видео</h2>
-  <input type="text" id="searchInput" placeholder="Поиск по названию..." autocomplete="off" />
-</section>
-
-<section id="videosPanel" style="max-width:480px; margin: 10px auto;">
-  <div id="videosList"></div>
-</section>
+<footer>
+  &copy; 2025 MyTube
+</footer>
 
 <script>
-  // --- Ключи в localStorage ---
-  const ACCOUNTS_KEY = 'mytube_accounts';
-  const CURRENT_USER_KEY = 'mytube_current_user';
-  const VIDEOS_KEY = 'mytube_videos';
+  let videosDB = [];
 
-  // --- DOM ---
-  const authPanel = document.getElementById('authPanel');
-  const currentUserInfo = document.getElementById('currentUserInfo');
-  const userAvatar = document.getElementById('userAvatar');
-  const userNickname = document.getElementById('userNickname');
-  const logoutBtn = document.getElementById('logoutBtn');
-
-  const nicknameInput = document.getElementById('nickname');
-  const avatarInput = document.getElementById('avatar');
-  const authButton = document.getElementById('authButton');
-  const authToggle = document.getElementById('authToggle');
-  const messageDiv = document.getElementById('message');
-
-  const uploadPanel = document.getElementById('uploadPanel');
-  const videoTitleInput = document.getElementById('videoTitle');
-  const videoUrlInput = document.getElementById('videoUrl');
-  const uploadBtn = document.getElementById('uploadBtn');
-
-  const searchPanel = document.getElementById('searchPanel');
-  const searchInput = document.getElementById('searchInput');
-
-  const videosList = document.getElementById('videosList');
-
-  let mode = 'login'; // 'login' или 'register'
-  let accounts = [];
-  let currentUser = null;
-  let videos = [];
-
-  // --- Функции для работы с localStorage ---
-  function getAccounts() {
-    return JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '[]');
-  }
-  function saveAccounts(accs) {
-    localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accs));
-  }
-  function getCurrentUser() {
-    return JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
-  }
-  function saveCurrentUser(user) {
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-  }
-  function removeCurrentUser() {
-    localStorage.removeItem(CURRENT_USER_KEY);
-  }
-  function getVideos() {
-    return JSON.parse(localStorage.getItem(VIDEOS_KEY) || '[]');
-  }
-  function saveVideos(vs) {
-    localStorage.setItem(VIDEOS_KEY, JSON.stringify(vs));
-  }
-
-  // --- Отобразить сообщение ---
-  function showMessage(text, color = '#ff4444') {
-    messageDiv.style.color = color;
-    messageDiv.textContent = text;
-  }
-  function clearMessage() {
-    messageDiv.textContent = '';
-  }
-
-  // --- Обновить интерфейс в зависимости от авторизации ---
-  function updateUI() {
-    if (currentUser) {
-      authPanel.style.display = 'none';
-      currentUserInfo.style.display = 'flex';
-      userAvatar.src = currentUser.avatar || 'https://via.placeholder.com/30';
-      userNickname.textContent = currentUser.nickname;
-
-      uploadPanel.style.display = 'block';
-      searchPanel.style.display = 'block';
-      renderVideos();
-    } else {
-      authPanel.style.display = 'block';
-      currentUserInfo.style.display = 'none';
-      uploadPanel.style.display = 'none';
-      searchPanel.style.display = 'none';
-      videosList.innerHTML = '';
+  async function loadVideos() {
+    try {
+      const res = await fetch('videos.json');
+      videosDB = await res.json();
+      searchVideos();
+    } catch {
+      // ничего не показываем
     }
   }
 
-  // --- Рендер списка видео (только текущего пользователя или по поиску) ---
-  function renderVideos(searchTerm = '') {
-    videosList.innerHTML = '';
-    const userVideos = videos.filter(v => v.owner === currentUser.nickname);
-    const filtered = searchTerm
-      ? userVideos.filter(v => v.title.toLowerCase().includes(searchTerm.toLowerCase()))
-      : userVideos;
+  function extractVideoID(url) {
+    const regex = /(?:youtube\.com\/.*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  }
 
-    if (filtered.length === 0) {
-      videosList.innerHTML = '<p>Видео не найдены.</p>';
-      return;
-    }
+  function searchVideos() {
+    const queryRaw = document.getElementById("searchInput").value.trim();
+    const query = queryRaw.toLowerCase();
+    const container = document.getElementById("videos");
 
-    filtered.forEach(video => {
-      const div = document.createElement('div');
-      div.className = 'videoItem';
-      div.innerHTML = `
-        <h3>${video.title}</h3>
-        <iframe src="${video.url}" allowfullscreen></iframe>
+    container.innerHTML = "";
+
+    const videoID = extractVideoID(queryRaw);
+
+    if (videoID) {
+      container.innerHTML = `
+        <div class="video-item" tabindex="0">
+          <iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe>
+        </div>
       `;
-      videosList.appendChild(div);
+      return;
+    }
+
+    const videos = query === "" 
+      ? videosDB 
+      : videosDB.filter(v => 
+          v.title.toLowerCase().includes(query) || 
+          v.description.toLowerCase().includes(query)
+        );
+
+    videos.forEach(video => {
+      const div = document.createElement("div");
+      div.className = "video-item";
+      div.tabIndex = 0;
+      div.innerHTML = `
+        <iframe src="https://www.youtube.com/embed/${video.id}" allowfullscreen></iframe>
+      `;
+      container.appendChild(div);
     });
   }
 
-  // --- Смена режима входа/регистрации ---
-  authToggle.addEventListener('click', () => {
-    if (mode === 'login') {
-      mode = 'register';
-      authButton.textContent = 'Зарегистрироваться';
-      authToggle.textContent = 'Уже есть аккаунт? Войти';
-      avatarInput.style.display = 'block';
-      clearMessage();
-    } else {
-      mode = 'login';
-      authButton.textContent = 'Войти';
-      authToggle.textContent = 'Нет аккаунта? Зарегистрироваться';
-      avatarInput.style.display = 'none';
-      clearMessage();
-    }
-  });
-
-  // --- Кнопка авторизации/регистрации ---
-  authButton.addEventListener('click', () => {
-    const nickname = nicknameInput.value.trim();
-    const avatar = avatarInput.value.trim();
-
-    if (!nickname) {
-      showMessage('Введите никнейм');
-      return;
-    }
-    if (mode === 'register' && !avatar) {
-      showMessage('Введите ссылку на аватарку');
-      return;
-    }
-
-    accounts = getAccounts();
-
-    if (mode === 'login') {
-      const user = accounts.find(u => u.nickname.toLowerCase() === nickname.toLowerCase());
-      if (!user) {
-        showMessage('Пользователь не найден. Зарегистрируйтесь.');
-        return;
-      }
-      currentUser = user;
-      saveCurrentUser(user);
-      showMessage(`Добро пожаловать, ${user.nickname}!`, '#00cc44');
-      clearInputs();
-      updateUI();
-    } else {
-      if (accounts.find(u => u.nickname.toLowerCase() === nickname.toLowerCase())) {
-        showMessage('Пользователь с таким ником уже существует');
-        return;
-      }
-      const newUser = { nickname, avatar };
-      accounts.push(newUser);
-      saveAccounts(accounts);
-      showMessage('Регистрация успешна! Теперь войдите.', '#00cc44');
-      toggleToLogin();
-    }
-  });
-
-  // --- Кнопка загрузки видео ---
-  uploadBtn.addEventListener('click', () => {
-    const title = videoTitleInput.value.trim();
-    const url = videoUrlInput.value.trim();
-
-    if (!title) {
-      alert('Введите название видео');
-      return;
-    }
-    if (!url) {
-      alert('Введите ссылку на видео');
-      return;
-    }
-    if (!currentUser) {
-      alert('Авторизуйтесь');
-      return;
-    }
-
-    videos = getVideos();
-
-    videos.push({
-      owner: currentUser.nickname,
-      title,
-      url,
-    });
-
-    saveVideos(videos);
-    videoTitleInput.value = '';
-    videoUrlInput.value = '';
-    renderVideos(searchInput.value.trim());
-  });
-
-  // --- Поиск по названию ---
-  searchInput.addEventListener('input', () => {
-    const term = searchInput.value.trim();
-    renderVideos(term);
-  });
-
-  // --- Выход ---
-  logoutBtn.addEventListener('click', () => {
-    currentUser = null;
-    removeCurrentUser();
-    clearInputs();
-    clearMessage();
-    updateUI();
-  });
-
-  // --- Утилиты ---
-  function clearInputs() {
-    nicknameInput.value = '';
-    avatarInput.value = '';
-    videoTitleInput.value = '';
-    videoUrlInput.value = '';
-    searchInput.value = '';
-  }
-
-  function toggleToLogin() {
-    mode = 'login';
-    authButton.textContent = 'Войти';
-    authToggle.textContent = 'Нет аккаунта? Зарегистрироваться';
-    avatarInput.style.display = 'none';
-    clearInputs();
-  }
-
-  // --- Запуск ---
-  window.onload = () => {
-    accounts = getAccounts();
-    videos = getVideos();
-    currentUser = getCurrentUser();
-
-    // Скрываем avatarInput для входа
-    if (mode === 'login') avatarInput.style.display = 'none';
-
-    updateUI();
-  };
+  loadVideos();
 </script>
 </body>
 </html>
