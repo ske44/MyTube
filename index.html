@@ -3,13 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MyTube</title>
+<title>MyTube с аккаунтами</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
   body {
     margin: 0;
     padding: 0 20px 40px;
@@ -71,12 +69,8 @@
     box-shadow: inset 0 0 5px #00000099;
     transition: box-shadow 0.3s ease;
   }
-  #searchInput::placeholder {
-    color: #999;
-  }
-  #searchInput:focus {
-    box-shadow: 0 0 8px #ff0000aa;
-  }
+  #searchInput::placeholder { color: #999; }
+  #searchInput:focus { box-shadow: 0 0 8px #ff0000aa; }
   button {
     background-color: #ff0000;
     border: none;
@@ -123,16 +117,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .video-description {
-    font-weight: 400;
-    font-size: 0.95rem;
-    color: #b3b3b3;
-    padding: 0 16px 14px;
-    flex-grow: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
   iframe {
     width: 100%;
     height: 190px;
@@ -140,24 +124,66 @@
     background-color: #000;
   }
 
-  @media (min-width: 600px) {
-    iframe {
-      height: 220px;
-    }
-  }
-  @media (min-width: 900px) {
-    iframe {
-      height: 250px;
-    }
-  }
+  @media (min-width: 600px) { iframe { height: 220px; } }
+  @media (min-width: 900px) { iframe { height: 250px; } }
 
-  footer {
+  /* Авторизация */
+  #authPanel {
+    margin-bottom: 32px;
+    background: #242424;
+    padding: 16px 20px;
+    border-radius: 12px;
+  }
+  #authPanel input {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    background: #303030;
+    color: white;
+  }
+  #authPanel label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #ccc;
+  }
+  #authPanel button {
+    width: 100%;
+    padding: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-radius: 12px;
+  }
+  #authToggle {
+    margin-top: 12px;
+    color: #999;
+    cursor: pointer;
     text-align: center;
-    padding: 20px 0 10px;
-    color: #666;
-    font-size: 0.9rem;
-    margin-top: 48px;
     user-select: none;
+  }
+  #authToggle:hover { color: #ff0000; }
+
+  /* Добавление видео */
+  #uploadPanel {
+    margin-bottom: 32px;
+    background: #242424;
+    padding: 16px 20px;
+    border-radius: 12px;
+  }
+  #uploadPanel input {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    background: #303030;
+    color: white;
   }
 </style>
 </head>
@@ -175,73 +201,77 @@
 </header>
 
 <main>
+  <section id="authPanel">
+    <h2 id="authTitle">Вход</h2>
+    <label for="nicknameInput">Никнейм</label>
+    <input type="text" id="nicknameInput" autocomplete="off" />
+    <label for="avatarInput">Аватарка (ссылка)</label>
+    <input type="text" id="avatarInput" autocomplete="off" />
+    <button id="authButton">Войти</button>
+    <div id="authToggle">Нет аккаунта? Зарегистрироваться</div>
+  </section>
+
+  <section id="uploadPanel" style="display:none;">
+    <label for="videoTitleInput">Название видео</label>
+    <input type="text" id="videoTitleInput" autocomplete="off" placeholder="Например: Мой первый ролик" />
+    <label for="videoURLInput">Ссылка на YouTube</label>
+    <input type="text" id="videoURLInput" autocomplete="off" placeholder="https://youtu.be/..." />
+    <button id="uploadButton">Загрузить видео</button>
+  </section>
+
   <div class="search-container">
-    <input id="searchInput" type="text" placeholder="" />
-    <button onclick="searchVideos()"></button>
+    <input id="searchInput" type="text" placeholder="Поиск по названию видео..." />
+    <button id="searchButton">Искать</button>
   </div>
   <div id="videos"></div>
 </main>
 
-<footer>
-  &copy; 2025 MyTube
-</footer>
+<footer>&copy; 2025 MyTube</footer>
 
 <script>
-  let videosDB = [];
+  // Локальное хранилище вместо файлов
+  const ACCOUNTS_KEY = 'mytube_accounts';
+  const VIDEOS_KEY = 'mytube_videos';
+  const CURRENT_USER_KEY = 'mytube_current_user';
 
-  async function loadVideos() {
-    try {
-      const res = await fetch('videos.json');
-      videosDB = await res.json();
-      searchVideos();
-    } catch {
-      // ничего не показываем
-    }
+  // Получить аккаунты из localStorage
+  function getAccounts() {
+    return JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '[]');
+  }
+  // Сохранить аккаунты
+  function saveAccounts(accounts) {
+    localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+  }
+  // Получить видео
+  function getVideos() {
+    return JSON.parse(localStorage.getItem(VIDEOS_KEY) || '[]');
+  }
+  // Сохранить видео
+  function saveVideos(videos) {
+    localStorage.setItem(VIDEOS_KEY, JSON.stringify(videos));
+  }
+  // Получить текущего пользователя
+  function getCurrentUser() {
+    return JSON.parse(localStorage.getItem(CURRENT_USER_KEY));
+  }
+  // Установить текущего пользователя
+  function setCurrentUser(user) {
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+  }
+  // Удалить текущего пользователя (выход)
+  function logout() {
+    localStorage.removeItem(CURRENT_USER_KEY);
+    location.reload();
   }
 
-  function extractVideoID(url) {
-    const regex = /(?:youtube\.com\/.*v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    const match = url.match(regex);
-    return match ? match[1] : null;
-  }
+  // UI элементы
+  const authPanel = document.getElementById('authPanel');
+  const uploadPanel = document.getElementById('uploadPanel');
+  const nicknameInput = document.getElementById('nicknameInput');
+  const avatarInput = document.getElementById('avatarInput');
+  const authButton = document.getElementById('authButton');
+  const authToggle = document.getElementById('authToggle');
+  const authTitle = document.getElementById('authTitle');
 
-  function searchVideos() {
-    const queryRaw = document.getElementById("searchInput").value.trim();
-    const query = queryRaw.toLowerCase();
-    const container = document.getElementById("videos");
-
-    container.innerHTML = "";
-
-    const videoID = extractVideoID(queryRaw);
-
-    if (videoID) {
-      container.innerHTML = `
-        <div class="video-item" tabindex="0">
-          <iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe>
-        </div>
-      `;
-      return;
-    }
-
-    const videos = query === "" 
-      ? videosDB 
-      : videosDB.filter(v => 
-          v.title.toLowerCase().includes(query) || 
-          v.description.toLowerCase().includes(query)
-        );
-
-    videos.forEach(video => {
-      const div = document.createElement("div");
-      div.className = "video-item";
-      div.tabIndex = 0;
-      div.innerHTML = `
-        <iframe src="https://www.youtube.com/embed/${video.id}" allowfullscreen></iframe>
-      `;
-      container.appendChild(div);
-    });
-  }
-
-  loadVideos();
-</script>
-</body>
-</html>
+  const videoTitleInput = document.getElementById('videoTitleInput');
+  const videoURLInput = document.getElementById('videoURL
