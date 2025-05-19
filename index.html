@@ -119,6 +119,9 @@
     font-size: 1.15rem;
     padding: 14px 16px 8px;
     color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .video-description {
     font-weight: 400;
@@ -126,6 +129,9 @@
     color: #b3b3b3;
     padding: 0 16px 14px;
     flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   iframe {
     width: 100%;
@@ -170,14 +176,14 @@
 
 <main>
   <div class="search-container">
-    <input id="searchInput" type="text" placeholder="Введите ключевые слова или ссылку на видео..." />
-    <button onclick="searchVideos()">Искать</button>
+    <input id="searchInput" type="text" placeholder="" />
+    <button onclick="searchVideos()"></button>
   </div>
-  <div id="videos">Загрузка видео...</div>
+  <div id="videos"></div>
 </main>
 
 <footer>
-  &copy; 2025 MyTube — Мини YouTube на JSON
+  &copy; 2025 MyTube
 </footer>
 
 <script>
@@ -188,9 +194,8 @@
       const res = await fetch('videos.json');
       videosDB = await res.json();
       searchVideos();
-    } catch (e) {
-      document.getElementById('videos').innerHTML = "Ошибка загрузки видео.";
-      console.error(e);
+    } catch {
+      // ничего не показываем
     }
   }
 
@@ -212,9 +217,7 @@
     if (videoID) {
       container.innerHTML = `
         <div class="video-item" tabindex="0">
-          <div class="video-title">Видео по ссылке</div>
           <iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe>
-          <div class="video-description">Это видео загружено по прямой ссылке.</div>
         </div>
       `;
       return;
@@ -227,19 +230,12 @@
           v.description.toLowerCase().includes(query)
         );
 
-    if (videos.length === 0) {
-      container.innerHTML = "<p>Видео не найдены.</p>";
-      return;
-    }
-
     videos.forEach(video => {
       const div = document.createElement("div");
       div.className = "video-item";
       div.tabIndex = 0;
       div.innerHTML = `
-        <div class="video-title">${video.title}</div>
         <iframe src="https://www.youtube.com/embed/${video.id}" allowfullscreen></iframe>
-        <div class="video-description">${video.description}</div>
       `;
       container.appendChild(div);
     });
